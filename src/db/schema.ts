@@ -62,6 +62,8 @@ export const categories = pgTable(
     name: text("name").notNull(),
     slug: text("slug").notNull(),
     description: text("description").notNull().default(""),
+    /** Key from CATEGORY_ICONS; null = guess from the name. */
+    icon: text("icon"),
     sortOrder: integer("sort_order").notNull().default(0),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   },
