@@ -1,0 +1,58 @@
+import type { Metadata } from "next";
+import Link from "next/link";
+import { Suspense } from "react";
+import { requireAdminPage } from "@/lib/admin";
+import { SignOutButton } from "./sign-out-button";
+
+export const metadata: Metadata = { title: "Admin", robots: { index: false } };
+
+const nav = [
+  { href: "/admin", label: "Dashboard" },
+  { href: "/admin/products", label: "Products" },
+  { href: "/admin/categories", label: "Categories" },
+  { href: "/admin/settings", label: "Settings" },
+];
+
+export default function AdminLayout({ children }: LayoutProps<"/admin">) {
+  return (
+    <Suspense fallback={<div className="p-8 text-muted">Loading…</div>}>
+      <AdminShell>{children}</AdminShell>
+    </Suspense>
+  );
+}
+
+async function AdminShell({ children }: { children: React.ReactNode }) {
+  const admin = await requireAdminPage();
+  const items = admin.role === "owner" ? [...nav, { href: "/admin/team", label: "Team" }] : nav;
+
+  return (
+    <div className="flex min-h-full flex-1 flex-col">
+      <header className="sticky top-0 z-30 border-b border-border bg-surface">
+        <div className="mx-auto flex h-14 max-w-5xl items-center gap-3 px-4">
+          <Link href="/admin" className="font-semibold">
+            Admin
+          </Link>
+          <Link href="/" target="_blank" className="text-sm text-muted hover:text-brand">
+            View site ↗
+          </Link>
+          <div className="ml-auto flex items-center gap-3 text-sm">
+            <span className="hidden text-muted sm:inline">{admin.email}</span>
+            <SignOutButton />
+          </div>
+        </div>
+        <nav className="mx-auto flex max-w-5xl gap-1 overflow-x-auto px-2 pb-2 text-sm">
+          {items.map((i) => (
+            <Link
+              key={i.href}
+              href={i.href}
+              className="whitespace-nowrap rounded-md px-3 py-1.5 hover:bg-background"
+            >
+              {i.label}
+            </Link>
+          ))}
+        </nav>
+      </header>
+      <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-6">{children}</main>
+    </div>
+  );
+}
