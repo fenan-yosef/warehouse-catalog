@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { MapPin, Package } from "lucide-react";
 import { getSettings } from "@/lib/queries";
 
 export const metadata: Metadata = { title: "About us" };
@@ -16,9 +17,11 @@ export default async function AboutPage() {
       </div>
       <div className="mt-10 flex flex-wrap gap-3">
         <Link href="/products" className="btn-primary">
+          <Package className="size-4" aria-hidden />
           Browse products
         </Link>
         <Link href="/contact" className="btn-secondary">
+          <MapPin className="size-4" aria-hidden />
           Contact & location
         </Link>
       </div>

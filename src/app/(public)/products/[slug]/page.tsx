@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
+import { ChevronRight, Package, ShoppingCart } from "lucide-react";
 import { getPublicProductBySlug, getSettings } from "@/lib/queries";
 import { getAvailability, getPriceText, formatNumber } from "@/lib/display";
 import { getContactLinks } from "@/lib/contact";
@@ -35,13 +36,13 @@ async function ProductDetail({ params }: { params: PageProps<"/products/[slug]">
 
   return (
     <>
-      <nav className="mb-4 text-sm text-muted">
+      <nav className="mb-4 flex flex-wrap items-center gap-1 text-sm text-muted">
         <Link href="/products" className="hover:text-brand">
           Products
         </Link>
         {product.category && (
           <>
-            {" / "}
+            <ChevronRight className="size-3.5" aria-hidden />
             <Link href={`/products?category=${product.category.slug}`} className="hover:text-brand">
               {product.category.name}
             </Link>
@@ -84,15 +85,21 @@ async function ProductDetail({ params }: { params: PageProps<"/products/[slug]">
           </div>
 
           <dl className="card mt-6 grid grid-cols-2 gap-4 p-4 text-sm">
-            <div>
-              <dt className="text-muted">Sold by</dt>
-              <dd className="font-medium">{product.unit}</dd>
+            <div className="flex gap-3">
+              <Package className="mt-0.5 size-5 shrink-0 text-brand" aria-hidden />
+              <div>
+                <dt className="text-muted">Sold by</dt>
+                <dd className="font-medium">{product.unit}</dd>
+              </div>
             </div>
-            <div>
-              <dt className="text-muted">Minimum order</dt>
-              <dd className="font-medium">
-                {formatNumber(product.minOrderQty)} {product.unit}
-              </dd>
+            <div className="flex gap-3">
+              <ShoppingCart className="mt-0.5 size-5 shrink-0 text-brand" aria-hidden />
+              <div>
+                <dt className="text-muted">Minimum order</dt>
+                <dd className="font-medium">
+                  {formatNumber(product.minOrderQty)} {product.unit}
+                </dd>
+              </div>
             </div>
           </dl>
 

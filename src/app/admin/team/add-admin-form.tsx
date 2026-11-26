@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState } from "react";
+import { UserPlus } from "lucide-react";
 import { addAdmin, type FormState } from "../actions";
 import { FormMessage } from "../form-message";
 
@@ -20,6 +21,7 @@ export function AddAdminForm() {
       </div>
       <FormMessage state={state} />
       <button disabled={pending} className="btn-primary">
+        <UserPlus className="size-4" aria-hidden />
         {pending ? "Adding…" : "Give admin access"}
       </button>
     </form>

@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { LogOut } from "lucide-react";
 import { authClient } from "@/lib/auth/client";
 
 export function SignOutButton() {
@@ -10,6 +11,7 @@ export function SignOutButton() {
   return (
     <button
       className="btn-secondary px-3 py-1.5"
+      aria-label="Sign out"
       disabled={pending}
       onClick={async () => {
         setPending(true);
@@ -18,7 +20,8 @@ export function SignOutButton() {
         router.refresh();
       }}
     >
-      Sign out
+      <LogOut className="size-4" aria-hidden />
+      <span className="hidden sm:inline">Sign out</span>
     </button>
   );
 }

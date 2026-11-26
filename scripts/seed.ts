@@ -20,10 +20,10 @@ const db = drizzle({ client: pool, schema });
 
 // Categories as given by the business (product lines / brands).
 const CATEGORIES = [
-  { name: "Golden Dragon", description: "Golden Dragon brand products" },
-  { name: "Turkish", description: "Products imported from Turkey" },
-  { name: "Fittings", description: "Pipe fittings: elbows, tees, couplings, unions, valves" },
-  { name: "Parkings", description: "" },
+  { name: "Golden Dragon", icon: "award", description: "Golden Dragon brand products" },
+  { name: "Turkish", icon: "globe", description: "Products imported from Turkey" },
+  { name: "Fittings", icon: "wrench", description: "Pipe fittings: elbows, tees, couplings, unions, valves" },
+  { name: "Parkings", icon: "ring", description: "" },
 ];
 
 // PLACEHOLDER products so the site doesn't look empty. Replace them from the admin panel.

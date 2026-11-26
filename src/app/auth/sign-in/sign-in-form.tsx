@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { Loader2, LogIn, UserPlus } from "lucide-react";
 import { authClient } from "@/lib/auth/client";
 
 export function SignInForm() {
@@ -72,6 +73,13 @@ export function SignInForm() {
         </p>
       )}
       <button disabled={pending} className="btn-primary w-full">
+        {pending ? (
+          <Loader2 className="size-4 animate-spin" aria-hidden />
+        ) : mode === "create" ? (
+          <UserPlus className="size-4" aria-hidden />
+        ) : (
+          <LogIn className="size-4" aria-hidden />
+        )}
         {pending ? "Please wait…" : mode === "create" ? "Create password & sign in" : "Sign in"}
       </button>
       <button

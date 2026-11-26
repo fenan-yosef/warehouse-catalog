@@ -3,8 +3,8 @@ import { AwsClient } from "aws4fetch";
 
 /**
  * Neon Object Storage (S3-compatible, path-style, SigV4).
- * Locally, `neon deploy`/`neon env pull` write AWS_* vars into .env.local.
- * On Vercel the AWS_* names are reserved, so set the STORAGE_* names there instead.
+ * Uses STORAGE_* env names (Vercel rejects AWS_*). The AWS_* fallback only exists so the app
+ * keeps working if `neon env pull`/`neon checkout` rewrites .env.local with Neon's default names.
  */
 const env = {
   accessKeyId: process.env.STORAGE_ACCESS_KEY_ID ?? process.env.AWS_ACCESS_KEY_ID,

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { and, count, desc, eq, gt, lte, sum } from "drizzle-orm";
+import { CircleAlert, CircleX, Boxes, History, Package, PackagePlus, Plus, type LucideIcon } from "lucide-react";
 import { db } from "@/db";
 import { products, stockMovements } from "@/db/schema";
 import { requireAdminPage } from "@/lib/admin";
@@ -49,24 +50,29 @@ export default async function AdminDashboard() {
         <h1 className="text-2xl font-semibold">Dashboard</h1>
         <div className="flex gap-2">
           <Link href="/admin/products" className="btn-secondary">
+            <PackagePlus className="size-4" aria-hidden />
             Update stock
           </Link>
           <Link href="/admin/products/new" className="btn-primary">
-            + Add product
+            <Plus className="size-4" aria-hidden />
+            Add product
           </Link>
         </div>
       </div>
 
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-        <Stat label="Products" value={formatNumber(totals.products)} />
-        <Stat label="Units in stock" value={formatNumber(Number(totals.units ?? 0))} />
-        <Stat label="Low stock" value={String(low.length)} tone="low" />
-        <Stat label="Out of stock" value={String(out.length)} tone="out" />
+        <Stat Icon={Package} label="Products" value={formatNumber(totals.products)} />
+        <Stat Icon={Boxes} label="Units in stock" value={formatNumber(Number(totals.units ?? 0))} />
+        <Stat Icon={CircleAlert} label="Low stock" value={String(low.length)} tone="low" />
+        <Stat Icon={CircleX} label="Out of stock" value={String(out.length)} tone="out" />
       </div>
 
       <div className="grid gap-6 lg:grid-cols-2">
         <section className="card p-4">
-          <h2 className="font-semibold">Running low (≤ {s.lowStockThreshold})</h2>
+          <h2 className="flex items-center gap-2 font-semibold">
+            <CircleAlert className="size-4 text-low" aria-hidden />
+            Running low (≤ {s.lowStockThreshold})
+          </h2>
           <List
             empty="Nothing is running low."
             items={low.map((p) => ({
@@ -77,7 +83,10 @@ export default async function AdminDashboard() {
           />
         </section>
         <section className="card p-4">
-          <h2 className="font-semibold">Out of stock</h2>
+          <h2 className="flex items-center gap-2 font-semibold">
+            <CircleX className="size-4 text-out" aria-hidden />
+            Out of stock
+          </h2>
           <List
             empty="Everything is in stock."
             items={out.map((p) => ({ href: `/admin/products/${p.id}`, left: p.name, right: "0" }))}
@@ -86,7 +95,10 @@ export default async function AdminDashboard() {
       </div>
 
       <section className="card p-4">
-        <h2 className="font-semibold">Recent stock changes</h2>
+        <h2 className="flex items-center gap-2 font-semibold">
+          <History className="size-4 text-muted" aria-hidden />
+          Recent stock changes
+        </h2>
         <List
           empty="No stock changes yet."
           items={recent.map((m) => ({
@@ -101,11 +113,24 @@ export default async function AdminDashboard() {
   );
 }
 
-function Stat({ label, value, tone }: { label: string; value: string; tone?: "low" | "out" }) {
+function Stat({
+  Icon,
+  label,
+  value,
+  tone,
+}: {
+  Icon: LucideIcon;
+  label: string;
+  value: string;
+  tone?: "low" | "out";
+}) {
   const color = tone === "low" ? "text-low" : tone === "out" ? "text-out" : "";
   return (
     <div className="card p-4">
-      <p className="text-sm text-muted">{label}</p>
+      <p className="flex items-center gap-1.5 text-sm text-muted">
+        <Icon className={`size-4 ${color}`} aria-hidden />
+        {label}
+      </p>
       <p className={`mt-1 text-2xl font-semibold ${color}`}>{value}</p>
     </div>
   );

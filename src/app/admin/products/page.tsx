@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { asc, eq, ilike } from "drizzle-orm";
+import { EyeOff, PackageSearch, Plus, Search } from "lucide-react";
 import { db } from "@/db";
 import { categories, products } from "@/db/schema";
 import { requireAdminPage } from "@/lib/admin";
@@ -33,17 +34,25 @@ export default async function AdminProductsPage({ searchParams }: PageProps<"/ad
       <div className="flex flex-wrap items-center justify-between gap-3">
         <h1 className="text-2xl font-semibold">Products</h1>
         <Link href="/admin/products/new" className="btn-primary">
-          + Add product
+          <Plus className="size-4" aria-hidden />
+          Add product
         </Link>
       </div>
 
       <form className="flex gap-2">
-        <input name="q" defaultValue={q} placeholder="Search by name…" className="input" />
-        <button className="btn-secondary">Search</button>
+        <div className="relative flex-1">
+          <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted" aria-hidden />
+          <input name="q" defaultValue={q} placeholder="Search by name…" className="input pl-9" />
+        </div>
+        <button className="btn-secondary" aria-label="Search">
+          <Search className="size-4 sm:hidden" aria-hidden />
+          <span className="hidden sm:inline">Search</span>
+        </button>
       </form>
 
       {rows.length === 0 ? (
-        <div className="card p-8 text-center text-muted">
+        <div className="card flex flex-col items-center gap-2 p-10 text-center text-muted">
+          <PackageSearch className="size-8" strokeWidth={1.5} aria-hidden />
           {q ? `No products match “${q}”.` : "No products yet. Add your first one."}
         </div>
       ) : (
@@ -56,9 +65,14 @@ export default async function AdminProductsPage({ searchParams }: PageProps<"/ad
                 <div className="flex items-start justify-between gap-3">
                   <Link href={`/admin/products/${p.id}`} className="min-w-0 hover:text-brand">
                     <p className="truncate font-medium">{p.name}</p>
-                    <p className="text-xs text-muted">
+                    <p className="flex items-center gap-1 text-xs text-muted">
                       {p.category ?? "No category"}
-                      {!p.isPublished && " · Hidden from site"}
+                      {!p.isPublished && (
+                        <>
+                          {" · "}
+                          <EyeOff className="size-3" aria-hidden /> Hidden from site
+                        </>
+                      )}
                     </p>
                   </Link>
                   <p className={`shrink-0 text-right text-lg font-semibold tabular-nums ${tone}`}>

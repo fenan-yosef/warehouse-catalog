@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState, useRef } from "react";
+import { Equal, Minus, Plus } from "lucide-react";
 import { adjustStock, type FormState } from "../actions";
 
 /**
@@ -38,7 +39,8 @@ export function QuickStock({ productId, showSet = false }: { productId: number; 
           disabled={pending}
           className="btn flex-1 bg-ok-soft text-ok hover:bg-ok hover:text-white"
         >
-          + Arrived
+          <Plus className="size-4" aria-hidden />
+          Arrived
         </button>
         <button
           name="direction"
@@ -46,10 +48,12 @@ export function QuickStock({ productId, showSet = false }: { productId: number; 
           disabled={pending}
           className="btn flex-1 bg-brand-soft text-brand hover:bg-brand hover:text-white"
         >
-          − Sold
+          <Minus className="size-4" aria-hidden />
+          Sold
         </button>
         {showSet && (
           <button name="direction" value="set" disabled={pending} className="btn-secondary flex-1">
+            <Equal className="size-4" aria-hidden />
             Set to
           </button>
         )}

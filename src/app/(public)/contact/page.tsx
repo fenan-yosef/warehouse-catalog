@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Clock, Mail, MessageCircle, Phone } from "lucide-react";
 import { getSettings } from "@/lib/queries";
 import { getContactLinks } from "@/lib/contact";
 import { ContactButtons } from "@/components/contact-buttons";
@@ -14,14 +15,20 @@ export default async function ContactPage() {
       <div className="mt-8 grid gap-8 lg:grid-cols-[1fr_1.4fr]">
         <div className="space-y-6">
           <div>
-            <h2 className="font-semibold">Message or call us</h2>
+            <h2 className="flex items-center gap-2 font-semibold">
+              <MessageCircle className="size-4 text-brand" aria-hidden />
+              Message or call us
+            </h2>
             <div className="mt-3">
               <ContactButtons links={getContactLinks(s)} size="lg" />
             </div>
           </div>
           {s.phones.length > 0 && (
             <div>
-              <h2 className="font-semibold">Phone</h2>
+              <h2 className="flex items-center gap-2 font-semibold">
+                <Phone className="size-4 text-brand" aria-hidden />
+                Phone
+              </h2>
               <ul className="mt-2 space-y-1">
                 {s.phones.map((p) => (
                   <li key={p}>
@@ -35,14 +42,20 @@ export default async function ContactPage() {
           )}
           {s.email && (
             <div>
-              <h2 className="font-semibold">Email</h2>
+              <h2 className="flex items-center gap-2 font-semibold">
+                <Mail className="size-4 text-brand" aria-hidden />
+                Email
+              </h2>
               <a href={`mailto:${s.email}`} className="mt-2 block text-brand hover:underline">
                 {s.email}
               </a>
             </div>
           )}
           <div>
-            <h2 className="font-semibold">Opening hours</h2>
+            <h2 className="flex items-center gap-2 font-semibold">
+              <Clock className="size-4 text-brand" aria-hidden />
+              Opening hours
+            </h2>
             <p className="mt-2 text-muted">{s.openingHours}</p>
           </div>
         </div>

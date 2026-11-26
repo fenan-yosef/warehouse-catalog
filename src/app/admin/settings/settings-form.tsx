@@ -1,15 +1,29 @@
 "use client";
 
 import { useActionState } from "react";
+import { Building2, Eye, MapPin, MessageCircle, Save, type LucideIcon } from "lucide-react";
 import type { Settings } from "@/db/schema";
 import { saveSettings, type FormState } from "../actions";
 import { FormMessage } from "../form-message";
 
-function Section({ title, hint, children }: { title: string; hint?: string; children: React.ReactNode }) {
+function Section({
+  Icon,
+  title,
+  hint,
+  children,
+}: {
+  Icon: LucideIcon;
+  title: string;
+  hint?: string;
+  children: React.ReactNode;
+}) {
   return (
     <section className="card space-y-4 p-4 sm:p-6">
       <div>
-        <h2 className="font-semibold">{title}</h2>
+        <h2 className="flex items-center gap-2 font-semibold">
+          <Icon className="size-4.5 text-brand" aria-hidden />
+          {title}
+        </h2>
         {hint && <p className="mt-0.5 text-sm text-muted">{hint}</p>}
       </div>
       {children}
@@ -34,7 +48,7 @@ export function SettingsForm({ settings: s }: { settings: Settings }) {
 
   return (
     <form action={action} className="space-y-6">
-      <Section title="Display rules" hint="Decide what customers can see. You can change these any time.">
+      <Section Icon={Eye} title="Display rules" hint="Decide what customers can see. You can change these any time.">
         <Toggle
           name="showPrices"
           label="Show prices on the website"
@@ -91,7 +105,7 @@ export function SettingsForm({ settings: s }: { settings: Settings }) {
         />
       </Section>
 
-      <Section title="Contact & ordering" hint="Customers order by messaging or calling you. These power the order buttons.">
+      <Section Icon={MessageCircle} title="Contact & ordering" hint="Customers order by messaging or calling you. These power the order buttons.">
         <div>
           <label className="label" htmlFor="phones">Phone numbers (one per line, first is the main one)</label>
           <textarea id="phones" name="phones" rows={2} defaultValue={s.phones.join("\n")} placeholder="+251 9..." className="input" />
@@ -117,7 +131,7 @@ export function SettingsForm({ settings: s }: { settings: Settings }) {
         </div>
       </Section>
 
-      <Section title="Business info">
+      <Section Icon={Building2} title="Business info">
         <div>
           <label className="label" htmlFor="businessName">Business name</label>
           <input id="businessName" name="businessName" required defaultValue={s.businessName} className="input" />
@@ -139,7 +153,7 @@ export function SettingsForm({ settings: s }: { settings: Settings }) {
         </div>
       </Section>
 
-      <Section title="Warehouse location" hint="For an exact map pin, open Google Maps, long-press the warehouse, and copy the two numbers.">
+      <Section Icon={MapPin} title="Warehouse location" hint="For an exact map pin, open Google Maps, long-press the warehouse, and copy the two numbers.">
         <div>
           <label className="label" htmlFor="warehouseAddress">Address</label>
           <input id="warehouseAddress" name="warehouseAddress" required defaultValue={s.warehouseAddress} className="input" />
@@ -163,6 +177,7 @@ export function SettingsForm({ settings: s }: { settings: Settings }) {
       <div className="sticky bottom-0 -mx-4 space-y-2 border-t border-border bg-background/95 px-4 py-3 backdrop-blur">
         <FormMessage state={state} />
         <button disabled={pending} className="btn-primary w-full sm:w-auto">
+          <Save className="size-4" aria-hidden />
           {pending ? "Saving…" : "Save settings"}
         </button>
       </div>

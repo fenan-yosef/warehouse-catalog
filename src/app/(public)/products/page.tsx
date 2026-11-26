@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
+import { LayoutGrid, PackageSearch, Search } from "lucide-react";
+import { categoryIcon } from "@/lib/category-icons";
 import { getCategories, getPublicProducts, getSettings } from "@/lib/queries";
 import { ProductCard } from "@/components/product-card";
 
@@ -29,7 +31,7 @@ async function Catalog({ searchParams }: { searchParams: PageProps<"/products">[
   ]);
 
   const chip = (active: boolean) =>
-    `whitespace-nowrap rounded-full border px-3 py-1.5 text-sm ${
+    `inline-flex items-center gap-1.5 whitespace-nowrap rounded-full border px-3 py-1.5 text-sm ${
       active ? "border-brand bg-brand text-white" : "border-border bg-surface hover:border-brand"
     }`;
   const withQ = (cat?: string) => {
@@ -44,23 +46,35 @@ async function Catalog({ searchParams }: { searchParams: PageProps<"/products">[
     <>
       <form action="/products" className="mt-4 flex gap-2">
         {category && <input type="hidden" name="category" value={category} />}
-        <input name="q" defaultValue={q} placeholder="Search products…" className="input" />
-        <button className="btn-primary">Search</button>
+        <div className="relative flex-1">
+          <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted" aria-hidden />
+          <input name="q" defaultValue={q} placeholder="Search products…" className="input pl-9" />
+        </div>
+        <button className="btn-primary">
+          <Search className="size-4 sm:hidden" aria-label="Search" />
+          <span className="hidden sm:inline">Search</span>
+        </button>
       </form>
 
       <div className="-mx-4 mt-4 flex gap-2 overflow-x-auto px-4 pb-1">
         <Link href={withQ()} className={chip(!category)}>
+          <LayoutGrid className="size-3.5" aria-hidden />
           All
         </Link>
-        {categories.map((c) => (
-          <Link key={c.id} href={withQ(c.slug)} className={chip(category === c.slug)}>
-            {c.name}
-          </Link>
-        ))}
+        {categories.map((c) => {
+          const Icon = categoryIcon(c.icon, c.name);
+          return (
+            <Link key={c.id} href={withQ(c.slug)} className={chip(category === c.slug)}>
+              <Icon className="size-3.5" aria-hidden />
+              {c.name}
+            </Link>
+          );
+        })}
       </div>
 
       {products.length === 0 ? (
-        <div className="card mt-6 p-8 text-center text-muted">
+        <div className="card mt-6 flex flex-col items-center gap-2 p-10 text-center text-muted">
+          <PackageSearch className="size-8" strokeWidth={1.5} aria-hidden />
           No products found{q ? ` for “${q}”` : ""}.
         </div>
       ) : (

@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState } from "react";
+import { Plus, Save } from "lucide-react";
 import type { Category, Product } from "@/db/schema";
 import { createProduct, updateProduct, type FormState } from "../actions";
 import { FormMessage } from "../form-message";
@@ -106,6 +107,7 @@ export function ProductForm({
 
       <FormMessage state={state} />
       <button disabled={pending} className="btn-primary w-full sm:w-auto">
+        {product ? <Save className="size-4" aria-hidden /> : <Plus className="size-4" aria-hidden />}
         {pending ? "Saving…" : product ? "Save changes" : "Create product"}
       </button>
     </form>

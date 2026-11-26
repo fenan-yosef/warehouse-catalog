@@ -1,16 +1,17 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
+import { ExternalLink, LayoutDashboard, Package, Settings, Tags, Users, Warehouse } from "lucide-react";
 import { requireAdminPage } from "@/lib/admin";
 import { SignOutButton } from "./sign-out-button";
 
 export const metadata: Metadata = { title: "Admin", robots: { index: false } };
 
 const nav = [
-  { href: "/admin", label: "Dashboard" },
-  { href: "/admin/products", label: "Products" },
-  { href: "/admin/categories", label: "Categories" },
-  { href: "/admin/settings", label: "Settings" },
+  { href: "/admin", label: "Dashboard", Icon: LayoutDashboard },
+  { href: "/admin/products", label: "Products", Icon: Package },
+  { href: "/admin/categories", label: "Categories", Icon: Tags },
+  { href: "/admin/settings", label: "Settings", Icon: Settings },
 ];
 
 export default function AdminLayout({ children }: LayoutProps<"/admin">) {
@@ -23,17 +24,21 @@ export default function AdminLayout({ children }: LayoutProps<"/admin">) {
 
 async function AdminShell({ children }: { children: React.ReactNode }) {
   const admin = await requireAdminPage();
-  const items = admin.role === "owner" ? [...nav, { href: "/admin/team", label: "Team" }] : nav;
+  const items = admin.role === "owner" ? [...nav, { href: "/admin/team", label: "Team", Icon: Users }] : nav;
 
   return (
     <div className="flex min-h-full flex-1 flex-col">
       <header className="sticky top-0 z-30 border-b border-border bg-surface">
         <div className="mx-auto flex h-14 max-w-5xl items-center gap-3 px-4">
-          <Link href="/admin" className="font-semibold">
+          <Link href="/admin" className="flex items-center gap-2 font-semibold">
+            <span className="flex size-7 items-center justify-center rounded-md bg-brand text-white">
+              <Warehouse className="size-4" aria-hidden />
+            </span>
             Admin
           </Link>
-          <Link href="/" target="_blank" className="text-sm text-muted hover:text-brand">
-            View site ↗
+          <Link href="/" target="_blank" className="flex items-center gap-1 text-sm text-muted hover:text-brand">
+            View site
+            <ExternalLink className="size-3.5" aria-hidden />
           </Link>
           <div className="ml-auto flex items-center gap-3 text-sm">
             <span className="hidden text-muted sm:inline">{admin.email}</span>
@@ -45,8 +50,9 @@ async function AdminShell({ children }: { children: React.ReactNode }) {
             <Link
               key={i.href}
               href={i.href}
-              className="whitespace-nowrap rounded-md px-3 py-1.5 hover:bg-background"
+              className="flex items-center gap-1.5 whitespace-nowrap rounded-md px-3 py-1.5 hover:bg-background"
             >
+              <i.Icon className="size-4 text-muted" aria-hidden />
               {i.label}
             </Link>
           ))}

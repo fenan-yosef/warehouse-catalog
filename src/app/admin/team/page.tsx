@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { asc } from "drizzle-orm";
+import { Crown, UserMinus, UserRound } from "lucide-react";
 import { db } from "@/db";
 import { admins } from "@/db/schema";
 import { requireAdminPage } from "@/lib/admin";
@@ -29,19 +30,29 @@ export default async function TeamPage() {
       <section className="card divide-y divide-border">
         {owners.map((email) => (
           <div key={email} className="flex items-center justify-between gap-3 p-4">
-            <span className="truncate">{email}</span>
-            <span className="rounded-full bg-brand-soft px-2 py-0.5 text-xs font-medium text-brand">Owner</span>
+            <span className="flex min-w-0 items-center gap-2">
+              <UserRound className="size-4 shrink-0 text-muted" aria-hidden />
+              <span className="truncate">{email}</span>
+            </span>
+            <span className="inline-flex items-center gap-1 rounded-full bg-brand-soft px-2 py-0.5 text-xs font-medium text-brand">
+              <Crown className="size-3" aria-hidden />
+              Owner
+            </span>
           </div>
         ))}
         {staff.map((a) => (
           <div key={a.email} className="flex items-center justify-between gap-3 p-4">
-            <span className="min-w-0">
+            <span className="flex min-w-0 items-center gap-2">
+              <UserRound className="size-4 shrink-0 text-muted" aria-hidden />
+              <span className="min-w-0">
               <span className="block truncate">{a.name || a.email}</span>
               {a.name && <span className="block truncate text-xs text-muted">{a.email}</span>}
+              </span>
             </span>
             <form action={removeAdmin}>
               <input type="hidden" name="email" value={a.email} />
               <ConfirmButton message={`Remove ${a.email}'s admin access?`} className="btn-danger px-3 py-1.5">
+                <UserMinus className="size-4" aria-hidden />
                 Remove
               </ConfirmButton>
             </form>

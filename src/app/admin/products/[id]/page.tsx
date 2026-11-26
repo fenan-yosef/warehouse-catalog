@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { asc, desc, eq } from "drizzle-orm";
+import { ArrowLeft, ExternalLink, History, ImageIcon, Info, Package, Trash2 } from "lucide-react";
 import { db } from "@/db";
 import { categories, productImages, products, stockMovements } from "@/db/schema";
 import { requireAdminPage } from "@/lib/admin";
@@ -39,12 +40,16 @@ export default async function EditProductPage({ params, searchParams }: PageProp
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <Link href="/admin/products" className="text-sm text-muted hover:text-brand">← Products</Link>
+          <Link href="/admin/products" className="inline-flex items-center gap-1 text-sm text-muted hover:text-brand">
+            <ArrowLeft className="size-4" aria-hidden />
+            Products
+          </Link>
           <h1 className="mt-1 text-2xl font-semibold">{product.name}</h1>
         </div>
         {product.isPublished && (
           <Link href={`/products/${product.slug}`} target="_blank" className="btn-secondary">
-            View on site ↗
+            View on site
+            <ExternalLink className="size-4" aria-hidden />
           </Link>
         )}
       </div>
@@ -55,7 +60,10 @@ export default async function EditProductPage({ params, searchParams }: PageProp
 
       <section className="card p-4 sm:p-6">
         <div className="flex items-baseline justify-between">
-          <h2 className="font-semibold">Stock</h2>
+          <h2 className="flex items-center gap-2 font-semibold">
+            <Package className="size-4 text-brand" aria-hidden />
+            Stock
+          </h2>
           <p className="text-2xl font-semibold tabular-nums">
             {formatNumber(product.quantity)} <span className="text-sm font-normal text-muted">{product.unit}</span>
           </p>
@@ -64,17 +72,26 @@ export default async function EditProductPage({ params, searchParams }: PageProp
       </section>
 
       <section>
-        <h2 className="mb-2 font-semibold">Photos</h2>
+        <h2 className="mb-2 flex items-center gap-2 font-semibold">
+          <ImageIcon className="size-4 text-brand" aria-hidden />
+          Photos
+        </h2>
         <ImageManager productId={product.id} images={images} />
       </section>
 
       <section>
-        <h2 className="mb-2 font-semibold">Details</h2>
+        <h2 className="mb-2 flex items-center gap-2 font-semibold">
+          <Info className="size-4 text-brand" aria-hidden />
+          Details
+        </h2>
         <ProductForm product={product} categories={cats} />
       </section>
 
       <section className="card p-4">
-        <h2 className="font-semibold">Stock history</h2>
+        <h2 className="flex items-center gap-2 font-semibold">
+          <History className="size-4 text-brand" aria-hidden />
+          Stock history
+        </h2>
         {movements.length === 0 ? (
           <p className="mt-2 text-sm text-muted">No stock changes yet.</p>
         ) : (
@@ -98,13 +115,17 @@ export default async function EditProductPage({ params, searchParams }: PageProp
       </section>
 
       <section className="card border-red-200 p-4">
-        <h2 className="font-semibold text-red-700">Delete product</h2>
+        <h2 className="flex items-center gap-2 font-semibold text-red-700">
+          <Trash2 className="size-4" aria-hidden />
+          Delete product
+        </h2>
         <p className="mt-1 text-sm text-muted">
           Removes the product, its photos and its stock history. To just hide it, untick “Show on website”.
         </p>
         <form action={deleteProduct} className="mt-3">
           <input type="hidden" name="id" value={product.id} />
           <ConfirmButton message={`Delete “${product.name}” permanently?`} className="btn-danger">
+            <Trash2 className="size-4" aria-hidden />
             Delete product
           </ConfirmButton>
         </form>

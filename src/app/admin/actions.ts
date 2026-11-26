@@ -1,7 +1,7 @@
 "use server";
 
 import { and, eq, gte, max, sql } from "drizzle-orm";
-import { updateTag } from "next/cache";
+import { refresh, updateTag } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { db } from "@/db";
@@ -16,6 +16,7 @@ import {
   stockMovements,
 } from "@/db/schema";
 import { requireAdmin } from "@/lib/admin";
+import { CATEGORY_ICONS } from "@/lib/category-icons";
 import { slugify } from "@/lib/display";
 import { TAGS } from "@/lib/queries";
 import { deleteObject, putObject } from "@/lib/storage";
@@ -257,6 +258,10 @@ const categorySchema = z.object({
   name: z.string().min(2, "Name is required").max(80),
   description: z.string().max(300),
   sortOrder: z.coerce.number().int().min(0).max(9999),
+  icon: z
+    .string()
+    .refine((v) => v in CATEGORY_ICONS)
+    .nullable(),
 });
 
 export async function saveCategory(_prev: FormState, fd: FormData): Promise<FormState> {
@@ -266,6 +271,7 @@ export async function saveCategory(_prev: FormState, fd: FormData): Promise<Form
     name: str(fd, "name"),
     description: str(fd, "description"),
     sortOrder: str(fd, "sortOrder") || 0,
+    icon: str(fd, "icon") || null,
   });
   if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? "Invalid category." };
 
@@ -368,4 +374,5 @@ export async function addAdmin(_prev: FormState, fd: FormData): Promise<FormStat
 export async function removeAdmin(fd: FormData) {
   await requireAdmin("owner");
   await db.delete(admins).where(eq(admins.email, String(fd.get("email"))));
+  refresh();
 }

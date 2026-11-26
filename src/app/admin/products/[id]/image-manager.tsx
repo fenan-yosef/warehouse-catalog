@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { startTransition, useActionState, useRef, useState } from "react";
+import { ImagePlus, Loader2, Star, Trash2 } from "lucide-react";
 import type { ProductImage } from "@/db/schema";
 import { deleteProductImage, makeMainImage, uploadProductImages, type FormState } from "../../actions";
 
@@ -61,7 +62,10 @@ export function ImageManager({ productId, images }: { productId: number; images:
                 {i > 0 && (
                   <form action={makeMainImage} className="flex-1">
                     <input type="hidden" name="imageId" value={img.id} />
-                    <button className="w-full rounded border border-border py-1 text-xs hover:bg-background">Main</button>
+                    <button className="flex w-full items-center justify-center gap-1 rounded border border-border py-1 text-xs hover:bg-background">
+                      <Star className="size-3" aria-hidden />
+                      Main
+                    </button>
                   </form>
                 )}
                 <form
@@ -72,7 +76,11 @@ export function ImageManager({ productId, images }: { productId: number; images:
                   }}
                 >
                   <input type="hidden" name="imageId" value={img.id} />
-                  <button className="w-full rounded border border-red-200 py-1 text-xs text-red-700 hover:bg-red-50">
+                  <button
+                    className="flex w-full items-center justify-center gap-1 rounded border border-red-200 py-1 text-xs text-red-700 hover:bg-red-50"
+                    aria-label="Delete photo"
+                  >
+                    <Trash2 className="size-3" aria-hidden />
                     Delete
                   </button>
                 </form>
@@ -85,7 +93,8 @@ export function ImageManager({ productId, images }: { productId: number; images:
       )}
 
       <label className={`btn-secondary w-full cursor-pointer sm:w-auto ${busy ? "pointer-events-none opacity-50" : ""}`}>
-        {preparing ? "Preparing…" : pending ? "Uploading…" : "+ Add photos"}
+        {busy ? <Loader2 className="size-4 animate-spin" aria-hidden /> : <ImagePlus className="size-4" aria-hidden />}
+        {preparing ? "Preparing…" : pending ? "Uploading…" : "Add photos"}
         <input
           ref={inputRef}
           type="file"

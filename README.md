@@ -40,9 +40,7 @@ Schema change: edit `schema.ts` → `npm run db:generate` → `npm run db:migrat
 ## Deploying to Vercel
 
 1. `neon checkout production`, then `npm run db:migrate` (and `npm run db:seed` once for the business settings).
-2. In Vercel, set env vars from the production branch's `.env.local`. **Vercel reserves `AWS_*` names**, so map the storage vars:
-   `AWS_ACCESS_KEY_ID → STORAGE_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY → STORAGE_SECRET_ACCESS_KEY`,
-   `AWS_ENDPOINT_URL_S3 → STORAGE_ENDPOINT_URL`, `AWS_REGION → STORAGE_REGION`.
-   Also set `DATABASE_URL`, `NEON_AUTH_BASE_URL`, `NEON_AUTH_COOKIE_SECRET`, `ADMIN_OWNER_EMAILS`.
+2. In Vercel, paste the production branch's `.env.local` into Environment Variables. Storage vars must use the
+   `STORAGE_*` names (Vercel rejects `AWS_*`). If a `neon env pull`/`neon checkout` wrote `AWS_*` names back, rename them first.
 3. Trust the domain for auth: `neon neon-auth domain add https://<your-domain>`.
 4. Production auth emails (password reset) need custom SMTP: https://neon.com/docs/auth/production-checklist.md
