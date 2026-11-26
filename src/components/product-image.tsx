@@ -15,7 +15,7 @@ export function ProductImage({
 }) {
   if (!url) {
     return (
-      <div className="flex size-full flex-col items-center justify-center gap-1 bg-brand-soft text-brand/60">
+      <div className="flex size-full flex-col items-center justify-center gap-1 bg-neutral-100 text-neutral-400">
         <Package className="size-1/4 max-h-16 max-w-16" strokeWidth={1.5} aria-hidden />
         <span className="text-xs">No photo yet</span>
       </div>
@@ -27,6 +27,7 @@ export function ProductImage({
       alt={name}
       fill
       sizes={sizes}
+      quality={70}
       priority={priority}
       className="object-cover"
     />

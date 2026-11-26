@@ -5,17 +5,27 @@ import { LayoutGrid, PackageSearch, Search } from "lucide-react";
 import { categoryIcon } from "@/lib/category-icons";
 import { getCategories, getPublicProducts, getSettings } from "@/lib/queries";
 import { ProductCard } from "@/components/product-card";
+import { PageBanner } from "@/components/page-banner";
+import { photos } from "@/lib/photos";
 
 export const metadata: Metadata = { title: "Products" };
 
 export default function ProductsPage({ searchParams }: PageProps<"/products">) {
   return (
-    <div className="mx-auto max-w-6xl px-4 py-8">
-      <h1 className="text-2xl font-semibold">Products</h1>
-      <Suspense fallback={<GridSkeleton />}>
-        <Catalog searchParams={searchParams} />
-      </Suspense>
-    </div>
+    <>
+      <PageBanner
+        image={photos.stackedBoxes}
+        title="Products"
+        subtitle="Metals and sanitary materials in stock at our warehouse."
+        className="h-32 sm:h-44"
+        scene="fittings"
+      />
+      <div className="mx-auto max-w-6xl px-4 py-6">
+        <Suspense fallback={<GridSkeleton />}>
+          <Catalog searchParams={searchParams} />
+        </Suspense>
+      </div>
+    </>
   );
 }
 
@@ -44,7 +54,7 @@ async function Catalog({ searchParams }: { searchParams: PageProps<"/products">[
 
   return (
     <>
-      <form action="/products" className="mt-4 flex gap-2">
+      <form action="/products" className="flex gap-2">
         {category && <input type="hidden" name="category" value={category} />}
         <div className="relative flex-1">
           <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted" aria-hidden />

@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
-import { ExternalLink, LayoutDashboard, Package, Settings, Tags, Users, Warehouse } from "lucide-react";
+import { ExternalLink, LayoutDashboard, Package, Settings, Tags, Users } from "lucide-react";
 import { requireAdminPage } from "@/lib/admin";
+import { RedRule } from "@/components/brand-accents";
+import { Logo } from "@/components/logo";
 import { SignOutButton } from "./sign-out-button";
 
 export const metadata: Metadata = { title: "Admin", robots: { index: false } };
@@ -28,20 +30,19 @@ async function AdminShell({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="flex min-h-full flex-1 flex-col">
-      <header className="sticky top-0 z-30 border-b border-border bg-surface">
+      <header className="sticky top-0 z-30 bg-ink text-white">
+        <RedRule />
         <div className="mx-auto flex h-14 max-w-5xl items-center gap-3 px-4">
           <Link href="/admin" className="flex items-center gap-2 font-semibold">
-            <span className="flex size-7 items-center justify-center rounded-md bg-brand text-white">
-              <Warehouse className="size-4" aria-hidden />
-            </span>
+            <Logo className="h-7 w-auto text-white" />
             Admin
           </Link>
-          <Link href="/" target="_blank" className="flex items-center gap-1 text-sm text-muted hover:text-brand">
+          <Link href="/" target="_blank" className="flex items-center gap-1 text-sm text-ink-muted hover:text-white">
             View site
             <ExternalLink className="size-3.5" aria-hidden />
           </Link>
           <div className="ml-auto flex items-center gap-3 text-sm">
-            <span className="hidden text-muted sm:inline">{admin.email}</span>
+            <span className="hidden text-ink-muted sm:inline">{admin.email}</span>
             <SignOutButton />
           </div>
         </div>
@@ -50,9 +51,9 @@ async function AdminShell({ children }: { children: React.ReactNode }) {
             <Link
               key={i.href}
               href={i.href}
-              className="flex items-center gap-1.5 whitespace-nowrap rounded-md px-3 py-1.5 hover:bg-background"
+              className="flex items-center gap-1.5 whitespace-nowrap rounded-md px-3 py-1.5 text-white/90 hover:bg-white/10"
             >
-              <i.Icon className="size-4 text-muted" aria-hidden />
+              <i.Icon className="size-4 text-ink-muted" aria-hidden />
               {i.label}
             </Link>
           ))}

@@ -1,24 +1,37 @@
+import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, MapPin, PackageCheck, Ship, Store, Warehouse } from "lucide-react";
+import { photos } from "@/lib/photos";
+import { LogoBars } from "@/components/brand-accents";
 import { getCategories, getPublicProducts, getSettings } from "@/lib/queries";
 import { getContactLinks } from "@/lib/contact";
 import { categoryIcon } from "@/lib/category-icons";
 import { ContactButtons } from "@/components/contact-buttons";
 import { MapEmbed } from "@/components/map-embed";
 import { ProductCard } from "@/components/product-card";
+import { ImportRoute } from "@/components/import-route";
+import { ThreeScene } from "@/components/three/three-scene";
+
+const WHAT_WE_SELL = [
+  { image: photos.steelPipes, title: "Metals", body: "Pipes, tubes and metal fittings" },
+  { image: photos.faucet, title: "Sanitary materials", body: "Taps, sinks and bathroom supplies" },
+];
 
 const VALUE_PROPS = [
   {
+    image: photos.containerTrucks,
     Icon: Ship,
     title: "Imported directly",
     body: "We import from manufacturers abroad, so you skip the middlemen.",
   },
   {
+    image: photos.stackedBoxes,
     Icon: Store,
     title: "Wholesale & retail",
     body: "Buy by the piece or in bulk. Ask us about large orders.",
   },
   {
+    image: photos.pipeRacks,
     Icon: Warehouse,
     title: "See it in person",
     body: "Visit our warehouse in Ashewa Meda to check goods before you buy.",
@@ -34,26 +47,75 @@ export default async function HomePage() {
 
   return (
     <>
-      <section className="border-b border-border bg-surface">
-        <div className="mx-auto max-w-6xl px-4 py-14 sm:py-20">
-          <p className="inline-flex items-center gap-2 rounded-full bg-brand-soft px-3 py-1 text-sm font-medium text-brand">
+      <section className="relative isolate overflow-hidden bg-ink text-white">
+        <Image
+          src={photos.warehouseAisle}
+          alt="Warehouse aisle with shelves full of stock"
+          fill
+          priority
+          placeholder="blur"
+          quality={55}
+          sizes="100vw"
+          className="-z-10 object-cover"
+        />
+        <div className="absolute inset-0 -z-10 bg-linear-to-r from-black/85 via-black/65 to-black/45" />
+        <div className="pointer-events-none absolute inset-0 opacity-45 lg:opacity-100">
+          <ThreeScene scene="hero" className="size-full" />
+        </div>
+        <div className="relative mx-auto max-w-6xl px-4 py-20 sm:py-32">
+          <p className="inline-flex items-center gap-2 rounded-full bg-brand px-3 py-1 text-sm font-medium">
             <PackageCheck className="size-4" aria-hidden />
             Direct importers · Warehouse in Ashewa Meda
           </p>
-          <h1 className="mt-4 max-w-3xl text-3xl font-semibold tracking-tight sm:text-5xl">
+          <h1 className="mt-4 max-w-xl text-3xl font-semibold tracking-tight sm:text-5xl">
             {s.businessName}
           </h1>
-          <p className="mt-4 max-w-2xl text-lg text-muted">{s.tagline}</p>
+          <LogoBars className="mt-5 h-4 w-auto" />
+          <p className="mt-5 max-w-2xl text-lg text-white/85">{s.tagline}</p>
           <div className="mt-8 flex flex-wrap gap-3">
             <Link href="/products" className="btn-primary px-5 py-3 text-base">
               Browse products
               <ArrowRight className="size-5" aria-hidden />
             </Link>
-            <Link href="/contact" className="btn-secondary px-5 py-3 text-base">
+            <Link
+              href="/contact"
+              className="btn border border-white/30 bg-white/10 px-5 py-3 text-base text-white backdrop-blur-sm hover:bg-white/20"
+            >
               <MapPin className="size-5" aria-hidden />
               Visit the warehouse
             </Link>
           </div>
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-6xl px-4 pt-12">
+        <h2 className="text-xl font-semibold">What we import</h2>
+        <div className="mt-5 grid gap-3 sm:grid-cols-2">
+          {WHAT_WE_SELL.map(({ image, title, body }) => (
+            <Link
+              key={title}
+              href="/products"
+              className="group relative isolate flex h-48 items-end overflow-hidden rounded-xl bg-ink text-white sm:h-64"
+            >
+              <Image
+                src={image}
+                alt=""
+                fill
+                placeholder="blur"
+                quality={55}
+                sizes="(min-width: 640px) 50vw, 100vw"
+                className="-z-10 object-cover transition-transform duration-500 group-hover:scale-105"
+              />
+              <div className="absolute inset-0 -z-10 bg-linear-to-t from-black/75 via-black/25 to-transparent" />
+              <div className="flex w-full items-end justify-between gap-3 p-5">
+                <div>
+                  <p className="text-xl font-semibold sm:text-2xl">{title}</p>
+                  <p className="mt-0.5 text-sm text-white/85">{body}</p>
+                </div>
+                <ArrowRight className="size-5 shrink-0 transition-transform group-hover:translate-x-1" aria-hidden />
+              </div>
+            </Link>
+          ))}
         </div>
       </section>
 
@@ -102,19 +164,37 @@ export default async function HomePage() {
         </section>
       )}
 
-      <section className="border-y border-border bg-surface">
-        <div className="mx-auto grid max-w-6xl gap-8 px-4 py-12 sm:grid-cols-3">
-          {VALUE_PROPS.map(({ Icon, title, body }) => (
-            <div key={title} className="flex gap-4">
-              <span className="flex size-11 shrink-0 items-center justify-center rounded-lg bg-brand-soft text-brand">
-                <Icon className="size-5.5" aria-hidden />
-              </span>
-              <div>
-                <p className="font-semibold">{title}</p>
-                <p className="mt-1 text-sm text-muted">{body}</p>
+      <ImportRoute />
+
+      <section className="mx-auto max-w-6xl px-4 py-12">
+        <div>
+          <h2 className="text-xl font-semibold">Why buy from us</h2>
+          <div className="mt-5 grid gap-5 sm:grid-cols-3">
+            {VALUE_PROPS.map(({ image, Icon, title, body }) => (
+              <div key={title} className="card overflow-hidden">
+                <div className="relative aspect-16/10 bg-neutral-200">
+                  <Image
+                    src={image}
+                    alt=""
+                    fill
+                    placeholder="blur"
+                    quality={55}
+                    sizes="(min-width: 640px) 33vw, 100vw"
+                    className="object-cover"
+                  />
+                </div>
+                <div className="flex gap-3 p-4">
+                  <span className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-brand text-white">
+                    <Icon className="size-5" aria-hidden />
+                  </span>
+                  <div>
+                    <p className="font-semibold">{title}</p>
+                    <p className="mt-1 text-sm text-muted">{body}</p>
+                  </div>
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </section>
 

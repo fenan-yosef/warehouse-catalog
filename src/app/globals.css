@@ -1,14 +1,19 @@
 @import "tailwindcss";
 
 :root {
-  --background: #fafaf7;
+  /* Brand: red, white and black, matching the logo. */
+  --background: #fafafa;
   --surface: #ffffff;
-  --foreground: #1c1b18;
-  --muted: #6b6a63;
-  --border: #e5e3dc;
-  --brand: #b4471f;
-  --brand-strong: #8f3515;
-  --brand-soft: #f8e9e1;
+  --foreground: #111111;
+  --muted: #5f5f5f;
+  --border: #e5e5e5;
+  --brand: #e00000;
+  --brand-strong: #b80000;
+  --brand-soft: #fdebeb;
+  /* Black surfaces (footer, admin bar, feature band). Don't put red text on these: contrast is too low. */
+  --ink: #111111;
+  --ink-soft: #1f1f1f;
+  --ink-muted: #a3a3a3;
   --ok: #1f7a4a;
   --ok-soft: #e3f3ea;
   --low: #9a6400;
@@ -26,6 +31,9 @@
   --color-brand: var(--brand);
   --color-brand-strong: var(--brand-strong);
   --color-brand-soft: var(--brand-soft);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-ink-muted: var(--ink-muted);
   --color-ok: var(--ok);
   --color-ok-soft: var(--ok-soft);
   --color-low: var(--low);
@@ -33,7 +41,6 @@
   --color-out: var(--out);
   --color-out-soft: var(--out-soft);
   --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
 }
 
 body {
@@ -50,7 +57,11 @@ body {
   }
 
 @utility btn-secondary {
-    @apply btn border border-border bg-surface text-foreground hover:bg-background;
+    @apply btn border border-border bg-surface text-foreground hover:border-foreground/40;
+  }
+
+@utility btn-dark {
+    @apply btn bg-ink text-white hover:bg-ink-soft;
   }
 
 @utility btn-danger {

@@ -1,8 +1,10 @@
 import Link from "next/link";
-import { Clock, MapPin, Package, Phone, Warehouse } from "lucide-react";
+import { Clock, MapPin, Package, Phone } from "lucide-react";
 import { getSettings } from "@/lib/queries";
 import { getContactLinks } from "@/lib/contact";
 import { ContactButtons, contactIcon } from "@/components/contact-buttons";
+import { RedRule } from "@/components/brand-accents";
+import { Logo } from "@/components/logo";
 
 export default async function PublicLayout({ children }: LayoutProps<"/">) {
   const s = await getSettings();
@@ -13,24 +15,23 @@ export default async function PublicLayout({ children }: LayoutProps<"/">) {
   return (
     <>
       <header className="sticky top-0 z-30 border-b border-border bg-surface/95 backdrop-blur">
+        <RedRule />
         <div className="mx-auto flex h-14 max-w-6xl items-center gap-4 px-4">
           <Link href="/" className="flex min-w-0 items-center gap-2 font-semibold">
-            <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-brand text-white">
-              <Warehouse className="size-4.5" aria-hidden />
-            </span>
-            <span className="truncate">{s.businessName}</span>
+            <Logo className="h-8 w-auto shrink-0 text-ink" />
+            <span className="truncate text-sm sm:text-base">{s.businessName}</span>
           </Link>
           <nav className="ml-auto flex items-center gap-1 text-sm">
             <Link href="/products" className="flex items-center gap-1.5 rounded-md px-3 py-2 hover:bg-background">
               <Package className="size-4 text-muted" aria-hidden />
-              <span>Products</span>
+              <span className="sr-only sm:not-sr-only">Products</span>
             </Link>
             <Link href="/about" className="hidden rounded-md px-3 py-2 hover:bg-background sm:block">
               About
             </Link>
             <Link href="/contact" className="flex items-center gap-1.5 rounded-md px-3 py-2 hover:bg-background">
               <Phone className="size-4 text-muted" aria-hidden />
-              <span className="hidden sm:inline">Contact</span>
+              <span className="sr-only sm:not-sr-only">Contact</span>
             </Link>
           </nav>
         </div>
@@ -38,22 +39,23 @@ export default async function PublicLayout({ children }: LayoutProps<"/">) {
 
       <main className="flex-1 pb-20 sm:pb-0">{children}</main>
 
-      <footer className="border-t border-border bg-surface">
-        <div className="mx-auto grid max-w-6xl gap-6 px-4 py-8 text-sm sm:grid-cols-3">
+      <footer className="bg-ink text-white">
+        <RedRule />
+        <div className="mx-auto grid max-w-6xl gap-6 px-4 py-10 text-sm sm:grid-cols-3">
           <div>
             <p className="flex items-center gap-2 font-semibold">
-              <Warehouse className="size-4 text-brand" aria-hidden />
+              <Logo className="h-6 w-auto text-white" />
               {s.businessName}
             </p>
-            <p className="mt-1 text-muted">{s.tagline}</p>
+            <p className="mt-1 text-ink-muted">{s.tagline}</p>
           </div>
           <div className="space-y-1.5">
             <p className="font-medium">Warehouse</p>
-            <p className="flex items-start gap-2 text-muted">
+            <p className="flex items-start gap-2 text-ink-muted">
               <MapPin className="mt-0.5 size-4 shrink-0" aria-hidden />
               {s.warehouseAddress}
             </p>
-            <p className="flex items-start gap-2 text-muted">
+            <p className="flex items-start gap-2 text-ink-muted">
               <Clock className="mt-0.5 size-4 shrink-0" aria-hidden />
               {s.openingHours}
             </p>

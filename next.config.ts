@@ -11,6 +11,12 @@ const nextConfig: NextConfig = {
   serverExternalPackages: ["@vercel/functions"],
   images: {
     remotePatterns: storageHost ? [{ protocol: "https", hostname: storageHost }] : [],
+    // AVIF is ~20-30% smaller than WebP; browsers without it get WebP.
+    formats: ["image/avif", "image/webp"],
+    // Fewer, smaller widths: phones never fetch desktop-sized files.
+    deviceSizes: [480, 640, 828, 1080, 1440, 1920],
+    imageSizes: [96, 160, 256, 384],
+    qualities: [55, 70],
     // Keys are unique per upload, so optimized images can be cached for a long time.
     minimumCacheTTL: 60 * 60 * 24 * 30,
   },
