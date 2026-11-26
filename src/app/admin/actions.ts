@@ -216,15 +216,25 @@ export async function uploadProductImages(_prev: FormState, fd: FormData): Promi
     .where(eq(productImages.productId, productId));
   let order = (top ?? -1) + 1;
 
+  let done = 0;
   for (const f of files) {
     const ext = f.type === "image/png" ? "png" : f.type === "image/webp" ? "webp" : "jpg";
     const key = `products/${productId}/${crypto.randomUUID()}.${ext}`;
-    const url = await putObject(key, new Uint8Array(await f.arrayBuffer()), f.type);
-    await db.insert(productImages).values({ productId, url, storageKey: key, sortOrder: order++ });
+    try {
+      const url = await putObject(key, new Uint8Array(await f.arrayBuffer()), f.type);
+      await db.insert(productImages).values({ productId, url, storageKey: key, sortOrder: order++ });
+      done++;
+    } catch (e) {
+      console.error("Photo upload failed", e);
+      refreshCatalog();
+      return {
+        error: `${done ? `${done} photo${done > 1 ? "s" : ""} uploaded, but ` : ""}${f.name} could not be uploaded. Check your connection and try again.`,
+      };
+    }
   }
 
   refreshCatalog();
-  return { ok: true, message: `${files.length} photo${files.length > 1 ? "s" : ""} uploaded.` };
+  return { ok: true, message: `${done} photo${done > 1 ? "s" : ""} uploaded.` };
 }
 
 export async function deleteProductImage(fd: FormData) {

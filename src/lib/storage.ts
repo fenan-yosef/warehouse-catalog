@@ -38,14 +38,19 @@ function objectUrl(key: string): string {
 /** Uploads to the public_read bucket and returns the public URL. Keys are unique, so cache forever. */
 export async function putObject(key: string, body: Uint8Array, contentType: string): Promise<string> {
   const url = objectUrl(key);
-  const res = await s3().fetch(url, {
+  const init = {
     method: "PUT",
     body: body as BodyInit,
     headers: {
       "Content-Type": contentType,
       "Cache-Control": "public, max-age=31536000, immutable",
     },
-  });
+  };
+  // Sign, then send the original bytes ourselves. Passing the signed Request object to
+  // fetch makes Next's patched fetch re-stream the body without a Content-Length, and
+  // the storage API rejects chunked uploads (501 NotImplemented).
+  const signed = await s3().sign(url, init);
+  const res = await fetch(url, { method: "PUT", headers: signed.headers, body: init.body, cache: "no-store" });
   if (!res.ok) throw new Error(`Upload failed (${res.status}): ${(await res.text()).slice(0, 200)}`);
   return url;
 }
