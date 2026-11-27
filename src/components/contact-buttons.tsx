@@ -15,13 +15,15 @@ export const contactIcon: Record<ContactLink["kind"], LucideIcon> = {
 
 export function ContactButtons({
   links,
+  emptyText,
   size = "md",
 }: {
   links: ContactLink[];
+  emptyText: string;
   size?: "md" | "lg";
 }) {
   if (links.length === 0) {
-    return <p className="text-sm text-muted">Contact details coming soon.</p>;
+    return <p className="text-sm text-muted">{emptyText}</p>;
   }
   return (
     <div className="flex flex-wrap gap-2">

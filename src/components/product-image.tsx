@@ -7,17 +7,19 @@ export function ProductImage({
   name,
   sizes,
   priority,
+  emptyLabel = "No photo yet",
 }: {
   url: string | null;
   name: string;
   sizes: string;
   priority?: boolean;
+  emptyLabel?: string;
 }) {
   if (!url) {
     return (
       <div className="flex size-full flex-col items-center justify-center gap-1 bg-neutral-100 text-neutral-400">
         <Package className="size-1/4 max-h-16 max-w-16" strokeWidth={1.5} aria-hidden />
-        <span className="text-xs">No photo yet</span>
+        <span className="text-xs">{emptyLabel}</span>
       </div>
     );
   }

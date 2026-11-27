@@ -28,8 +28,18 @@ const whenIdle = (fn: () => void) =>
  * Skipped on data-saver / 2G, simplified on phones and weak devices, paused off-screen,
  * and drawn as a single still frame for reduced-motion users.
  */
-export function ThreeScene({ scene, className = "" }: { scene: SceneName; className?: string }) {
+export function ThreeScene({
+  scene,
+  className = "",
+  labels,
+}: {
+  scene: SceneName;
+  className?: string;
+  /** Text drawn inside the scene, in the page language. Read once when the scene mounts. */
+  labels?: Record<string, string>;
+}) {
   const ref = useRef<HTMLCanvasElement>(null);
+  const labelsRef = useRef(labels);
 
   useEffect(() => {
     const canvas = ref.current;
@@ -64,7 +74,7 @@ export function ThreeScene({ scene, className = "" }: { scene: SceneName; classN
       try {
         const mount = await loaders[scene]();
         if (cancelled) return;
-        handle = mount(canvas, { quality: weak ? "low" : "high", reduceMotion });
+        handle = mount(canvas, { quality: weak ? "low" : "high", reduceMotion, labels: labelsRef.current });
         canvas.dataset.ready = "true";
         sync();
       } catch {

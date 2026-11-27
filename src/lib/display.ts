@@ -1,4 +1,5 @@
 import type { Settings } from "@/db/schema";
+import type { Dict } from "@/i18n/en";
 
 export type DisplaySettings = Pick<
   Settings,
@@ -21,6 +22,7 @@ export function getAvailability(
   quantity: number,
   unit: string,
   s: DisplaySettings,
+  t: Dict,
 ): Availability {
   const tone: StockTone =
     quantity <= 0 ? "out" : quantity <= s.lowStockThreshold ? "low" : "ok";
@@ -31,21 +33,26 @@ export function getAvailability(
     case "exact":
       return {
         tone,
-        label: tone === "out" ? "Out of stock" : `${formatNumber(quantity)} ${unit} in stock`,
+        label: tone === "out" ? t.stock.out : t.stock.exact(formatNumber(quantity), unitLabel(unit, t)),
       };
     case "status":
     default:
       return {
         tone,
-        label: tone === "out" ? "Out of stock" : tone === "low" ? "Limited stock" : "In stock",
+        label: tone === "out" ? t.stock.out : tone === "low" ? t.stock.limited : t.stock.in,
       };
   }
 }
 
-/** What the public sees for price. */
-export function getPriceText(priceEtb: number | null, unit: string, s: DisplaySettings): string {
-  if (s.showPrices && priceEtb != null) return `ETB ${formatNumber(priceEtb)} / ${unit}`;
+/** What the public sees for price. Pass settings already localized (priceFallbackText). */
+export function getPriceText(priceEtb: number | null, unit: string, s: DisplaySettings, t: Dict): string {
+  if (s.showPrices && priceEtb != null) return t.price.perUnit(formatNumber(priceEtb), unitLabel(unit, t));
   return s.priceFallbackText;
+}
+
+/** Unit in the page language; falls back to what the admin typed. */
+export function unitLabel(unit: string, t: Dict): string {
+  return t.units[unit.toLowerCase()] ?? unit;
 }
 
 export function formatNumber(n: number): string {

@@ -1,6 +1,6 @@
 import "server-only";
 import { cacheLife, cacheTag } from "next/cache";
-import { and, asc, desc, eq, gt, ilike, inArray, or, type SQL } from "drizzle-orm";
+import { and, asc, desc, eq, gt, ilike, inArray, or, sql, type SQL } from "drizzle-orm";
 import { db } from "@/db";
 import { categories, productImages, products, settings, type Settings } from "@/db/schema";
 
@@ -32,6 +32,9 @@ export const DEFAULT_SETTINGS: Settings = {
   stockDisplay: "status",
   lowStockThreshold: 20,
   showOutOfStock: true,
+  facebookUrl: null,
+  tiktokUrl: null,
+  i18n: {},
   updatedAt: new Date(0),
 };
 
@@ -58,6 +61,7 @@ const publicProductColumns = {
   priceEtb: products.priceEtb,
   quantity: products.quantity,
   categoryId: products.categoryId,
+  i18n: products.i18n,
 } as const;
 
 export type PublicProduct = Awaited<ReturnType<typeof getPublicProducts>>[number];
@@ -87,7 +91,10 @@ export async function getPublicProducts(opts: {
   }
   if (opts.q) {
     const term = `%${opts.q.replace(/[%_]/g, "")}%`;
-    where.push(or(ilike(products.name, term), ilike(products.description, term))!);
+    // Also matches Amharic / Afaan Oromo names and descriptions.
+    where.push(
+      or(ilike(products.name, term), ilike(products.description, term), ilike(sql`${products.i18n}::text`, term))!,
+    );
   }
 
   const rows = await db
@@ -120,9 +127,33 @@ export async function getPublicProductBySlug(slug: string) {
   const product = await db.query.products.findFirst({
     where: and(eq(products.slug, slug), eq(products.isPublished, true)),
     with: {
-      category: { columns: { name: true, slug: true } },
+      category: { columns: { name: true, slug: true, description: true, i18n: true } },
       images: { orderBy: [asc(productImages.sortOrder), asc(productImages.id)] },
     },
   });
   return product ?? null;
+}
+
+export async function getCategoryBySlug(slug: string) {
+  "use cache";
+  cacheTag(TAGS.catalog);
+  cacheLife("days");
+  const row = await db.query.categories.findFirst({ where: eq(categories.slug, slug) });
+  return row ?? null;
+}
+
+/** Everything the sitemap lists. */
+export async function getSitemapData() {
+  "use cache";
+  cacheTag(TAGS.catalog);
+  cacheLife("days");
+  const [prods, cats] = await Promise.all([
+    db
+      .select({ slug: products.slug, updatedAt: products.updatedAt })
+      .from(products)
+      .where(eq(products.isPublished, true))
+      .orderBy(asc(products.slug)),
+    db.select({ slug: categories.slug }).from(categories).orderBy(asc(categories.sortOrder), asc(categories.slug)),
+  ]);
+  return { products: prods, categories: cats };
 }

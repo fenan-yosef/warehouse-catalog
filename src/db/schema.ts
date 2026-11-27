@@ -18,6 +18,24 @@ export type StockDisplay = (typeof STOCK_DISPLAY)[number];
 export const MOVEMENT_REASONS = ["arrival", "sale", "adjustment", "correction"] as const;
 export type MovementReason = (typeof MOVEMENT_REASONS)[number];
 
+/** Languages with optional translations. English lives in the normal columns. */
+export const TRANSLATED_LANGS = ["am", "om"] as const;
+export type TranslatedLang = (typeof TRANSLATED_LANGS)[number];
+type Translations<F extends string> = Partial<Record<TranslatedLang, Partial<Record<F, string>>>>;
+
+export const PRODUCT_I18N_FIELDS = ["name", "description"] as const;
+export const CATEGORY_I18N_FIELDS = ["name", "description"] as const;
+export const SETTINGS_I18N_FIELDS = [
+  "tagline",
+  "aboutText",
+  "priceFallbackText",
+  "warehouseAddress",
+  "openingHours",
+] as const;
+export type ProductI18n = Translations<(typeof PRODUCT_I18N_FIELDS)[number]>;
+export type CategoryI18n = Translations<(typeof CATEGORY_I18N_FIELDS)[number]>;
+export type SettingsI18n = Translations<(typeof SETTINGS_I18N_FIELDS)[number]>;
+
 /**
  * Site-wide settings. Always exactly one row (id = 1).
  * The "display rules" columns are the business decisions that are still open;
@@ -52,6 +70,13 @@ export const settings = pgTable("settings", {
   lowStockThreshold: integer("low_stock_threshold").notNull().default(20),
   showOutOfStock: boolean("show_out_of_stock").notNull().default(true),
 
+  // Social profiles (shown in the footer and used for search-engine "sameAs" links)
+  facebookUrl: text("facebook_url"),
+  tiktokUrl: text("tiktok_url"),
+
+  /** Amharic / Afaan Oromo versions of the text fields; English is the fallback. */
+  i18n: jsonb("i18n").$type<SettingsI18n>().notNull().default({}),
+
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 });
 
@@ -65,6 +90,7 @@ export const categories = pgTable(
     /** Key from CATEGORY_ICONS; null = guess from the name. */
     icon: text("icon"),
     sortOrder: integer("sort_order").notNull().default(0),
+    i18n: jsonb("i18n").$type<CategoryI18n>().notNull().default({}),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   },
   (t) => [uniqueIndex("categories_slug_idx").on(t.slug)],
@@ -85,6 +111,7 @@ export const products = pgTable(
     quantity: integer("quantity").notNull().default(0),
     isPublished: boolean("is_published").notNull().default(true),
     isFeatured: boolean("is_featured").notNull().default(false),
+    i18n: jsonb("i18n").$type<ProductI18n>().notNull().default({}),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
     updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
   },

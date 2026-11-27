@@ -200,7 +200,7 @@ export const mountRoute: MountScene = (canvas, opts) =>
       ring.position.copy(v).multiplyScalar(1.003);
       ring.lookAt(v.clone().multiplyScalar(2));
       pulses.push(ring);
-      const tag = label(p.label);
+      const tag = label(opts.labels?.[key] ?? p.label);
       tag.center.set(p.anchor[0], p.anchor[1]);
       tag.position.copy(v).multiplyScalar(1.02);
       globe.add(dot, ring, tag);

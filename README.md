@@ -44,3 +44,25 @@ Schema change: edit `schema.ts` → `npm run db:generate` → `npm run db:migrat
    `STORAGE_*` names (Vercel rejects `AWS_*`). If a `neon env pull`/`neon checkout` wrote `AWS_*` names back, rename them first.
 3. Trust the domain for auth: `neon neon-auth domain add https://<your-domain>`.
 4. Production auth emails (password reset) need custom SMTP: https://neon.com/docs/auth/production-checklist.md
+
+## Languages & SEO
+
+**Three languages.** English lives at `/…`, Amharic at `/am/…` and Afaan Oromo at `/om/…`; `src/proxy.ts` does the routing (and redirects `/en/…` to the clean URL).
+- UI text is in `src/i18n/{en,am,om}.ts`. The Amharic and Oromo files are drafts and need a native speaker's review.
+- Product, category and settings text can be translated in the admin under "Amharic & Afaan Oromo (optional)". Empty fields fall back to English.
+- `npx tsx scripts/seed-translations.ts` adds starter translations for the default settings and categories. It never overwrites edits.
+
+**Built in:**
+- per-language titles and descriptions, canonical URLs and `hreflang` links;
+- `/sitemap.xml` (every page × 3 languages) and `/robots.txt` (admin blocked; preview deploys are noindex);
+- real category pages at `/categories/<slug>`;
+- schema.org data: business (HardwareStore), Product, BreadcrumbList, ItemList, and FAQPage on the contact page;
+- a share-card image at `/api/og` for Telegram, WhatsApp and Facebook previews, with products using their own photo.
+
+**Things the code can't do (these matter as much for ranking):**
+1. **Google Business Profile.** Create one for the warehouse: categories "Plumbing supply store", "Metal supplier", "Wholesaler"; add photos, phone, hours and the website link. This drives Google Maps and "near me" results.
+2. **Google Search Console.** Add the site as a "URL prefix" property, choose the *HTML tag* method, and put the code in `GOOGLE_SITE_VERIFICATION` on Vercel. Redeploy, verify, then submit `https://tuftetrading.vercel.app/sitemap.xml`. Do the same in Bing Webmaster Tools (`BING_SITE_VERIFICATION`).
+3. **Ethiopian directories.** List the business on 2merkato.com and Ethiopian Yellow Pages, with exactly the same name, address and phone as the website.
+4. **Links.** Link to the website from the Telegram channel, Facebook page and supplier pages, and fill in the Facebook/TikTok fields in Settings. Ask satisfied customers for Google reviews.
+5. **Keep adding real products** with photos and Amharic/Oromo names. Specific, fresh product pages are what rank.
+6. **Turn on prices** in Settings if possible. Google only shows rich product results (price and availability in search) when a price is published.

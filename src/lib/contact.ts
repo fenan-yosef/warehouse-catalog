@@ -1,4 +1,5 @@
 import type { Settings } from "@/db/schema";
+import type { Dict } from "@/i18n/en";
 
 export type ContactSettings = Pick<
   Settings,
@@ -17,17 +18,15 @@ export interface ContactLink {
 }
 
 /** Builds the order/contact buttons, optionally prefilled with a product name. */
-export function getContactLinks(s: ContactSettings, productName?: string): ContactLink[] {
-  const message = productName
-    ? `Hello, I'm interested in "${productName}". Is it available?`
-    : "Hello, I'd like to ask about your products.";
+export function getContactLinks(s: ContactSettings, t: Dict, productName?: string): ContactLink[] {
+  const message = productName ? t.contactLinks.messageProduct(productName) : t.contactLinks.messageGeneral;
   const links: ContactLink[] = [];
 
   const tg = s.telegramUsername?.replace(/^@/, "").trim();
   if (s.showTelegram && tg) {
     links.push({
       kind: "telegram",
-      label: productName ? "Order on Telegram" : "Telegram",
+      label: productName ? t.contactLinks.orderTelegram : t.contactLinks.telegram,
       href: `https://t.me/${encodeURIComponent(tg)}?text=${encodeURIComponent(message)}`,
     });
   }
@@ -36,14 +35,14 @@ export function getContactLinks(s: ContactSettings, productName?: string): Conta
   if (s.showWhatsapp && wa) {
     links.push({
       kind: "whatsapp",
-      label: productName ? "Order on WhatsApp" : "WhatsApp",
+      label: productName ? t.contactLinks.orderWhatsapp : t.contactLinks.whatsapp,
       href: `https://wa.me/${wa}?text=${encodeURIComponent(message)}`,
     });
   }
 
   const phone = s.phones[0]?.trim();
   if (s.showPhone && phone) {
-    links.push({ kind: "phone", label: `Call ${phone}`, href: `tel:${phone.replace(/\s+/g, "")}` });
+    links.push({ kind: "phone", label: t.contactLinks.call(phone), href: `tel:${phone.replace(/\s+/g, "")}` });
   }
 
   return links;

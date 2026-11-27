@@ -9,7 +9,7 @@ type Nav = Navigator & { connection?: { saveData?: boolean; effectiveType?: stri
  * Google Maps costs ~1 MB of scripts and tiles. Show a light placeholder and load the
  * real map on tap, or automatically on fast connections once it scrolls into view.
  */
-export function MapFrame({ src, address }: { src: string; address: string }) {
+export function MapFrame({ src, address, showLabel }: { src: string; address: string; showLabel: string }) {
   const [show, setShow] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
@@ -48,7 +48,7 @@ export function MapFrame({ src, address }: { src: string; address: string }) {
           <span className="max-w-xs text-sm font-medium">{address}</span>
           <span className="btn-secondary pointer-events-none">
             <MapIcon className="size-4" aria-hidden />
-            Show map
+            {showLabel}
           </span>
         </button>
       )}

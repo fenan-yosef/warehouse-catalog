@@ -9,7 +9,12 @@ import {
 } from "three";
 
 export type Quality = "low" | "high";
-export type StageOptions = { quality: Quality; reduceMotion: boolean };
+export type StageOptions = {
+  quality: Quality;
+  reduceMotion: boolean;
+  /** Text drawn inside a scene (e.g. place names on the globe), in the page language. */
+  labels?: Record<string, string>;
+};
 export type SceneHandle = { start(): void; stop(): void; dispose(): void };
 export type MountScene = (canvas: HTMLCanvasElement, opts: StageOptions) => SceneHandle;
 
